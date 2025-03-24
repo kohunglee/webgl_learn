@@ -1,0 +1,48 @@
+    <canvas class="canvas" width="500" height="500">
+ 
+    </canvas>
+    <!-- 顶点着色器--><script id="vertex-shader" type="x-shader/x-vertex">
+        void main(){
+            gl_PointSize = 10.0;
+            gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+    </script>
+ 
+    <!-- 片元着色器--><script id="fragment-shader" type="x-shader/x-fragment">
+ 
+        void main(){
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    </script>
+    <script>
+        const canvas = document.querySelector('.canvas');
+        const gl = canvas.getContext('webgl');
+ 
+        // 创建顶点着色器和片元着色器
+        const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+        const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+ 
+        // 创建着色器源码
+        const vertexSource = document.getElementById('vertex-shader').innerText;
+        const fragmentSource = document.getElementById('fragment-shader').innerText;
+ 
+        //绑定着色器源码
+        gl.shaderSource(vertexShader, vertexSource);
+        gl.shaderSource(fragmentShader, fragmentSource);
+ 
+        // 编译着色器源码
+        gl.compileShader(vertexShader);
+        gl.compileShader(fragmentShader);
+ 
+        // 创建程序对象
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+ 
+        // 链接
+        gl.linkProgram(program);
+        gl.useProgram(program);
+ 
+        // 绘制
+        gl.drawArrays(gl.POINTS, 0, 1);
+    </script>
