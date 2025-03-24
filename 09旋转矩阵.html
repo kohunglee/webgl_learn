@@ -1,0 +1,55 @@
+    <canvas class="canvas" width="500" height="500"></canvas>
+ 
+    <!-- 顶点着色器--><script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec2 aPosition;
+        void main(){
+            float radian = radians(45.0);
+            float sin = sin(radian);
+            float cos = cos(radian);
+            mat4 roatate = mat4(  // 旋转矩阵
+                cos, -sin, 0, 0,
+                sin, cos, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            );
+ 
+            gl_Position = roatate * vec4(aPosition, 0.0, 1.0);
+            gl_PointSize = 10.0;
+        }
+    </script>
+ 
+    <!-- 片元着色器--><script id="fragment-shader" type="x-shader/x-fragment">
+        precision highp float;  // 声明精度
+        varying vec4 vColor;
+        void main(){
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    </script>
+    <script type="module">
+        import initShader from './utiles/initShader.js';
+        const canvas = document.querySelector('.canvas');
+        const gl = canvas.getContext('webgl');
+        const program = initShader(gl);
+ 
+        const vertices = new Float32Array([
+            -0.5, 0.5,
+            -0.5, -0.5,
+            0.5, -0.5,
+            0.5, 0.5,
+        ]);
+        
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+ 
+        const posLocation = gl.getAttribLocation(program, 'aPosition');
+ 
+        // 告诉解析器，怎么解析我们缓冲区里面的数据
+        gl.vertexAttribPointer(posLocation, 2, gl.FLOAT, false, 2 * Float32Array.BYTES_PER_ELEMENT, 0);
+        
+        gl.enableVertexAttribArray(posLocation);  // 启用顶点属性数组
+ 
+        // 绘制
+        gl.drawArrays(gl.POINTS, 0, 4);
+        gl.drawArrays(gl.LINE_LOOP, 0, 4);
+    </script>
